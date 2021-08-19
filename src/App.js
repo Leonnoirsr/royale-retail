@@ -1,10 +1,12 @@
 import React from 'react';
-import { Switch, Route } from 'react-router';
+import { Switch, Route } from 'react-router-dom';
+
 import './App.css';
+
 import HomePage from './components/pages/Homepage.component';
 import Shop from './components/pages/shop/shop.component';
+import SignInAndSignUpPage from './components/pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
-import SignInAndSignUps from './components/pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 class App extends React.Component {
@@ -25,19 +27,18 @@ class App extends React.Component {
 
 				userRef.onSnapshot((snapShot) => {
 					this.setState({
-						currentuser: {
+						currentUser: {
 							id: snapShot.id,
 							...snapShot.data(),
 						},
-					}, () => {
-						console.log(this.state);
 					});
+
+					console.log(this.state);
 				});
-				
 			}
-			this.setState({currentUser: userAuth});
+
+			this.setState({ currentUser: userAuth });
 		});
-		
 	}
 
 	componentWillUnmount() {
@@ -51,7 +52,7 @@ class App extends React.Component {
 				<Switch>
 					<Route exact path="/" component={HomePage} />
 					<Route path="/shop" component={Shop} />
-					<Route path="/signin" component={SignInAndSignUps} />
+					<Route path="/signin" component={SignInAndSignUpPage} />
 				</Switch>
 			</div>
 		);

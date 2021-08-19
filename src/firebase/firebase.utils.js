@@ -12,40 +12,38 @@ const config = {
 	measurementId: 'G-D220YCM57M',
 };
 
+firebase.initializeApp(config);
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
 	if (!userAuth) return;
 
-	const userRef = firestore.doc(`users/${userAuth.id}`);
+	const userRef = firestore.doc(`users/${userAuth.uid}`);
 
 	const snapShot = await userRef.get();
 
-	if(!snapShot.exists) {
-    const {displayName, email} = userAuth;
-    const createdAt = new Date();
+	if (!snapShot.exists) {
+		const { displayName, email } = userAuth;
+		const createdAt = new Date();
 
-
-    try {
-await userRef.set({
-  displayName,
-  email,
-  createdAt,
-  ...additionalData
-})
-    } catch (err) {
-      console.log(('error creating user', err.message));
-    }
-  }
-  return userRef;
+		try {
+			await userRef.set({
+				displayName,
+				email,
+				createdAt,
+				...additionalData,
+			});
+		} catch (err) {
+			console.log(('error creating user', err.message));
+		}
+	}
+	return userRef;
 };
-
-
-
-firebase.initializeApp(config);
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 export const signInWithGoogle = () => {
 	auth
 		.signInWithPopup(googleProvider)
